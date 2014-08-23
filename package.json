@@ -1,0 +1,32 @@
+{
+  "name": "tessel-heart",
+  "version": "0.0.1",
+  "description": "It's a sign in the shape of a heart. Awwww.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/johnnyman727/tessel-heart.git"
+  },
+  "keywords": [
+    "tessel",
+    "neopixels",
+    "heart",
+    "sign",
+    "coolest",
+    "company"
+  ],
+  "dependencies": {
+    "neopixel-animations": "^0.0.1",
+    "neopixels": "^0.0.3",
+    "nodejs-websocket": "^1.0.0"
+  },
+  "author": "Jon McKay <jon@technical.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/johnnyman727/tessel-heart/issues"
+  },
+  "homepage": "https://github.com/johnnyman727/tessel-heart"
+}
