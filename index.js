@@ -1,21 +1,40 @@
 var Neopixels = require('neopixels'),
-    animations = require('neopixel-animations');
+    animations = require('neopixel-animations'),
+    ws = require('nodejs-websocket'),
     numPixels = 60,
     neopixels = new Neopixels(numPixels),
-    prop = 0.0;
+    prop = 0.0,
+    port = 8000;
 
 
-var interval = setInterval(function() {
+// Create the websocket server, provide connection callback
+var server = ws.createServer(function (conn) {
+  console.log("Accepted new connection...");
 
-  prop += 0.02;
+  // If get a binary stream is opened up
+  conn.on("binary", function(stream) {
+    // When we get data
+    stream.on('data', function(data) {
+      var data = data.toString().split(' ');
+      var color = data[0];
+      var prog = parseFloat(data[1])
+      if (color) {
+        animateProgressBar(color, prog);
+      }
+      else {
+        console.log("Invalid Color Received", color);
+      }
+      
+    });
+  });
 
-  animateProgressBar('red', prop);
-
-  if (prop >= 1.00) clearInterval(interval);
-
-}, 150);
-
+  conn.on("close", function (code, reason) {
+      console.log("Connection closed")
+  });
+}).listen(port);
 
 function animateProgressBar (color, progress) {
   neopixels.animate(numPixels, animations.progressBar(numPixels, color, progress));
 };
+
+console.log('listening on port', port);
