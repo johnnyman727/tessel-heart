@@ -7,7 +7,6 @@ var Neopixels = require('neopixels'),
     _heart = {},
     _traces = {};
 
-
 // Create the websocket server, provide connection callback
 var server = ws.createServer(function (conn) {
   console.log("Accepted new connection...");
@@ -25,7 +24,8 @@ var server = ws.createServer(function (conn) {
       animateTesselHeart(incoming.set.heart);
 
       // Animate the progress traces 
-      animateTesselTraces(incoming.set.traces);
+      // animateTesselTraces(incoming.set.traces);
+
     }
 
     if (incoming.get) {
@@ -38,12 +38,18 @@ var server = ws.createServer(function (conn) {
       }
 
       if (incoming.get.traces) {
-        
+
         packet.traces = _traces;
       }
 
       conn.sendText(JSON.stringify(packet));
     } 
+  });
+
+  conn.on('binary', function(stream) {
+    stream.on('data', function(data) {
+      neopixels.animate(numPixels, data);
+    })
   });
 
   conn.on("close", function (code, reason) {
@@ -57,7 +63,7 @@ function animateTesselHeart(heart) {
   console.log('setting ', heart);
   _heart = heart;
 
-  // animateProgressBar(heart.color, heart.progress);
+  neopixels.animate(numPixels, animations.pulse(heart.color, heart.pulse));
 }
 
 function animateTesselTraces(traces) {
@@ -65,14 +71,15 @@ function animateTesselTraces(traces) {
   console.log('setting traces');
   _traces = traces;
 
+  var buffer = new Buffer(0);
+  var numTraces = Object.keys(traces).length;
+  var traceLength = numPixels/numTraces;
+  var animationArr = [];
   for (trace in traces) {
-    console.log('trace', traces[trace]);
-    // animateProgressBar(traces[trace].color, traces[trace].progress);
+    animationArr.push(animations.progressBar(traceLength, traces[trace].color, traces[trace].progress, "white"));
   }
-}
 
-function animateProgressBar (color, progress) {
-  neopixels.animate(numPixels, animations.progressBar(numPixels, color, progress));
-};
+  neopixels.animate(numPixels, Buffer.concat(animationArr));
+}
 
 console.log('listening on port', port);

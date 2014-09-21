@@ -6,7 +6,7 @@ var port = 8000;
 ws.setBinaryFragmentation(1);
 
 // When we get a connection (Put your Tessel's IP Address here!)
-var connection = ws.connect('ws://172.20.10.2:' + port, function() {
+var connection = ws.connect('ws://192.168.7.197:' + port, function() {
 
   connection.on('text', function(data) {
     console.log('got some data', data);
@@ -25,8 +25,12 @@ var connection = ws.connect('ws://172.20.10.2:' + port, function() {
           progress : 0.25,
         },
         2 : {
-          color : "white",
+          color : "teal",
           progress : 1.0,
+        },
+        3 : {
+          color : "magenta",
+          progress : 0.75,
         }
       }
     },
